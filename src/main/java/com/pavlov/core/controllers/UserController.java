@@ -6,6 +6,7 @@ import com.pavlov.core.model.Role;
 import com.pavlov.core.model.User;
 import com.pavlov.core.services.UserService;
 import lombok.RequiredArgsConstructor;
+import mappers.UserMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,10 +23,10 @@ public class UserController {
     @GetMapping("/users/{id}")
     public UserDTO sayHello(@PathVariable Long id) {
         User user = userService.getUser(id);
-        return toDTO(user);
+        return UserMapper.INSTANCE.toDTO(user);
     }
 
-    private UserDTO toDTO(User user) {
+    /*private UserDTO toDTO(User user) {
         Set<RoleDTO> roleDTOS = toDTOs(user.getRoles());
         return UserDTO.builder()
                 .id(user.getId())
@@ -43,5 +44,5 @@ public class UserController {
 
     private Set<RoleDTO> toDTOs(Set<Role> role) {
         return role.stream().map(role1 -> toDTO(role1)).collect(Collectors.toSet());
-    }
+    }*/
 }
