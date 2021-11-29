@@ -9,11 +9,14 @@ import com.pavlov.core.model.User;
 import com.pavlov.core.services.ImageService;
 import com.pavlov.core.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 @RestController
@@ -26,8 +29,14 @@ public class ImageController {
     @GetMapping("/images/{id}")
     public ResponseEntity<?> getImage(@PathVariable Long id) throws IOException {
         Image image = imageService.getImage(id);
-        ImageDTO imageDTO = imageMapper.toDTO(image);
-        return new ResponseEntity<>(imageDTO, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .header("fileName", image.getOriginalFilename())
+                .contentType(MediaType.valueOf(image.getContentType()))
+                .contentLength(image.getSize())
+                .body(new InputStreamResource(new ByteArrayInputStream(image.getBytes())));
+
+//        ImageDTO imageDTO = imageMapper.toDTO(image);
+//        return new ResponseEntity<>(imageDTO, HttpStatus.OK);
     }
 
     @PostMapping("/images")
@@ -35,7 +44,12 @@ public class ImageController {
         Image image = imageMapper.toEntity(file);
         image = imageService.saveImage(image);
         ImageDTO imageDTO = imageMapper.toDTO(image);
-        return new ResponseEntity<>(imageDTO, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("fileName", image.getOriginalFilename())
+                .contentType(MediaType.valueOf(image.getContentType()))
+                .contentLength(image.getSize())
+                .body(new InputStreamResource(new ByteArrayInputStream(image.getBytes())));
+//        return new ResponseEntity<>(imageDTO, HttpStatus.CREATED);
     }
 
 //    public UserDTO sayHello(@PathVariable Long id) {
