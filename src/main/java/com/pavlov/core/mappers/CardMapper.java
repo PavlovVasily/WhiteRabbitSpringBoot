@@ -10,5 +10,6 @@ import org.mapstruct.Mapping;
 public interface CardMapper {
     @Mapping(source = "enWord", target = "enWordDTO")
     @Mapping(source = "ruWord", target = "ruWordDTO")
+    @Mapping(source = "image", target = "imageDTO")
     CardDTO toDTO(Card card);
 }

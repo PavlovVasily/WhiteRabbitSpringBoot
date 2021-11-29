@@ -102,3 +102,14 @@ CREATE TABLE `trustmeenglish`.`images`
     `bytes`             LONGBLOB    NOT NULL,
     PRIMARY KEY (`id`)
 );
+
+ALTER TABLE `trustmeenglish`.`cards`
+    ADD COLUMN `image_id` BIGINT(20) NULL AFTER `rating`,
+    ADD INDEX `fk_image_idx` (`image_id` ASC) VISIBLE;
+;
+ALTER TABLE `trustmeenglish`.`cards`
+    ADD CONSTRAINT `fk_images`
+        FOREIGN KEY (`image_id`)
+            REFERENCES `trustmeenglish`.`images` (`id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION;
